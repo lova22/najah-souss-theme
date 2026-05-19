@@ -14,7 +14,8 @@ jobs:
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@v4.3.4
       with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
+        server: 82.29.189.90
+        username: Pu339423319.ansae.org
+        password: "Tadart@2025?"
+        port: 21
         server-dir: /public_html/wp-content/themes/najah-souss-theme/
