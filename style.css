@@ -1,0 +1,151 @@
+/*
+Theme Name: Najah Souss Theme
+Theme URI: https://najah-souss.com
+Author: Antigravity
+Author URI: 
+Description: Custom WordPress theme for Najah Souss Echecs, converted from Lovable export.
+Version: 1.0.0
+Text Domain: najahsouss
+*/
+
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --font-display: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --font-royal: "Cinzel", "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+:root {
+  --radius: 0.75rem;
+  --background: oklch(0.11 0.012 270);
+  --foreground: oklch(0.97 0.012 85);
+  --surface: oklch(0.15 0.014 270);
+  --surface-2: oklch(0.19 0.016 270);
+  --card: oklch(0.15 0.014 270);
+  --card-foreground: oklch(0.97 0.012 85);
+  --popover: oklch(0.15 0.014 270);
+  --popover-foreground: oklch(0.97 0.012 85);
+  --primary: oklch(0.83 0.13 82);
+  --primary-foreground: oklch(0.11 0.012 270);
+  --gold: oklch(0.83 0.13 82);
+  --gold-soft: oklch(0.93 0.07 88);
+  --secondary: oklch(0.23 0.014 270);
+  --secondary-foreground: oklch(0.97 0.012 85);
+  --muted: oklch(0.20 0.012 270);
+  --muted-foreground: oklch(0.74 0.018 85);
+  --accent: oklch(0.83 0.13 82);
+  --accent-foreground: oklch(0.11 0.012 270);
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: oklch(0.97 0.012 85);
+  --border: oklch(0.83 0.13 82 / 18%);
+  --input: oklch(0.20 0.014 270);
+  --ring: oklch(0.83 0.13 82);
+}
+
+.dark {
+  --background: oklch(0.11 0.012 270);
+  --foreground: oklch(0.97 0.012 85);
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { scroll-behavior: smooth; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-sans);
+    background-image:
+      radial-gradient(ellipse at top, oklch(0.83 0.13 82 / 10%), transparent 55%),
+      radial-gradient(ellipse at bottom right, oklch(0.25 0.04 280 / 35%), transparent 60%),
+      radial-gradient(ellipse at bottom, oklch(0.13 0.014 270), var(--color-background));
+  }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.015em; font-weight: 600; }
+}
+
+@layer utilities {
+  .text-gold { color: var(--gold); }
+  .bg-gold { background-color: var(--gold); }
+  .border-gold { border-color: var(--gold); }
+  .font-royal { font-family: var(--font-royal); letter-spacing: 0.08em; }
+  .gradient-gold {
+    background: linear-gradient(135deg, oklch(0.95 0.06 88), oklch(0.83 0.13 82) 45%, oklch(0.72 0.14 70));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .bg-gradient-gold {
+    background: linear-gradient(135deg, oklch(0.92 0.09 86), oklch(0.78 0.14 75));
+  }
+  .surface-card {
+    background:
+      linear-gradient(180deg, oklch(0.17 0.014 270 / 90%), oklch(0.13 0.014 270 / 90%));
+    border: 1px solid oklch(0.83 0.13 82 / 18%);
+    box-shadow:
+      inset 0 1px 0 0 oklch(0.83 0.13 82 / 10%),
+      0 1px 0 0 oklch(0 0 0 / 30%);
+  }
+  .gold-shadow {
+    box-shadow:
+      0 0 0 1px oklch(0.83 0.13 82 / 25%),
+      0 10px 50px -10px oklch(0.83 0.13 82 / 40%);
+  }
+  .gold-glow {
+    box-shadow: 0 0 60px -10px oklch(0.83 0.13 82 / 35%);
+  }
+  .divider-gold {
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    height: 1px;
+  }
+  .ornament::before, .ornament::after {
+    content: "";
+    display: inline-block;
+    width: 2.5rem;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold));
+    vertical-align: middle;
+    margin: 0 0.75rem;
+  }
+  .ornament::after {
+    background: linear-gradient(90deg, var(--gold), transparent);
+  }
+  .eyebrow {
+    font-family: var(--font-royal);
+    text-transform: uppercase;
+    letter-spacing: 0.35em;
+    font-size: 0.72rem;
+    color: var(--gold);
+    font-weight: 500;
+  }
+}
