@@ -69,7 +69,7 @@ get_header();
 
         <!-- FOOTER RETURN LINK -->
         <div class="mt-20 text-center">
-            <a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="inline-flex items-center gap-2 text-muted-foreground hover:text-gold transition-all duration-300 text-xs font-royal tracking-[0.3em] uppercase group">
+            <a href="<?php echo esc_url( function_exists('pll_home_url') ? pll_home_url() : home_url( '/' ) ); ?>" class="inline-flex items-center gap-2 text-muted-foreground hover:text-gold transition-all duration-300 text-xs font-royal tracking-[0.3em] uppercase group">
                 <span class="transform group-hover:-translate-x-2 transition-transform">←</span>
                 <?php _e('RETOUR AU SITE OFFICIEL', 'najah-souss'); ?>
             </a>

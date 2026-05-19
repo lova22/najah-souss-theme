@@ -127,7 +127,7 @@
 <body <?php body_class( 'min-h-screen bg-background text-foreground' ); ?>>
 <?php wp_body_open(); ?>
 
-<?php $home_url = is_front_page() ? '' : esc_url( home_url( '/' ) ); ?>
+<?php $home_url = is_front_page() ? '' : esc_url( function_exists('pll_home_url') ? pll_home_url() : home_url( '/' ) ); ?>
 <header id="site-header" class="fixed top-0 inset-x-0 z-50 backdrop-blur-md bg-background/70 border-b border-border">
     <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
         <a href="<?php echo $home_url; ?>#accueil" class="flex items-center gap-3" aria-label="Najah Souss Échecs — Accueil">

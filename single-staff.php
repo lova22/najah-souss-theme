@@ -8,7 +8,7 @@ get_header(); ?>
     <div class="max-w-5xl mx-auto">
         <!-- Universal Back Navigation -->
         <div class="mb-10">
-            <a href="<?php echo esc_url(home_url('/')); ?>" class="inline-flex items-center gap-2 text-gold hover:text-white transition-colors duration-300 font-semibold tracking-wide">
+            <a href="<?php echo esc_url(function_exists('pll_home_url') ? pll_home_url() : home_url('/')); ?>" class="inline-flex items-center gap-2 text-gold hover:text-white transition-colors duration-300 font-semibold tracking-wide">
                 <span aria-hidden="true" class="rtl:rotate-180">←</span>
                 <?php echo ansae_t('Retour à l\'accueil'); ?>
             </a>

@@ -400,7 +400,7 @@
                 <p class="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed">
                     <?php echo ansae_t('Affrontez des joueurs du monde entier ou entraînez-vous contre l\'IA sur notre espace dédié.'); ?>
                 </p>
-                <a href="<?php echo esc_url( home_url( '/jouer/' ) ); ?>" class="inline-block px-10 py-5 rounded-md bg-gradient-gold text-primary-foreground font-bold tracking-wide gold-shadow transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[0_0_15px_rgba(212,175,55,0.6)]">
+                <a href="<?php echo esc_url( (function_exists('pll_home_url') ? pll_home_url() : home_url('/')) . 'jouer/' ); ?>" class="inline-block px-10 py-5 rounded-md bg-gradient-gold text-primary-foreground font-bold tracking-wide gold-shadow transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[0_0_15px_rgba(212,175,55,0.6)]">
                     <?php echo ansae_t('Jouer aux Échecs Maintenant ♞'); ?>
                 </a>
             </div>
@@ -786,7 +786,7 @@
                 <a href="YOUR_PDF_LINK_HERE" target="_blank" download class="inline-flex items-center gap-3 px-8 py-4 rounded-md bg-gradient-gold text-primary-foreground font-semibold tracking-wide gold-shadow transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[0_0_15px_rgba(212,175,55,0.6)]">
                     <span aria-hidden="true">⬇</span> <?php echo esc_html( ansae_t( get_field('partenariat_cta_text') ?: 'TÉLÉCHARGER LE DOSSIER SPONSORING' ) ); ?>
                 </a>
-                <a href="#contact" class="inline-flex items-center px-8 py-4 rounded-md border border-foreground/80 text-foreground font-semibold tracking-wide hover:bg-foreground hover:text-background transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
+                <a href="<?php echo esc_url( function_exists('pll_home_url') ? pll_home_url() : home_url('/') ); ?>#contact" class="inline-flex items-center px-8 py-4 rounded-md border border-foreground/80 text-foreground font-semibold tracking-wide hover:bg-foreground hover:text-background transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
                     <?php echo ansae_t('NOUS CONTACTER'); ?>
                 </a>
             </div>
