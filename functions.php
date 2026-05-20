@@ -658,7 +658,7 @@ add_action('wp_ajax_nopriv_load_more_champions', 'load_more_champions');
 // Enqueue infinite scroll script on champions archive page
 function enqueue_champion_infinite_scroll() {
     if ( is_post_type_archive('champion') ) {
-        wp_enqueue_script('champion-infinite-scroll', get_template_directory_uri() . '/assets/js/infinite-scroll.js', array(), null, true);
+        wp_enqueue_script('champion-infinite-scroll', get_template_directory_uri() . '/assets/js/infinite-scroll.js', array(), '1.1', true);
         wp_localize_script('champion-infinite-scroll', 'championScroll', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('load_more_champions_nonce')

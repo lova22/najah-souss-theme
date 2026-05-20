@@ -40,6 +40,7 @@ get_header();
                     </article>
                 <?php endwhile; ?>
             </div>
+            <div id="champion-load-trigger" style="height: 20px; width: 100%;"></div>
         <?php else : ?>
             <p class="text-center text-muted-foreground"><?php echo ansae_t('Aucun champion disponible pour le moment.'); ?></p>
         <?php endif; ?>
