@@ -15,12 +15,13 @@ get_header();
         </div>
 
         <header class="text-center mb-12">
-            <h1 class="text-3xl md:text-5xl font-bold mb-4"><?php echo wp_kses_post( ansae_t('Notre Équipe - Classement FIDE') ); ?></h1>
+            <h1 class="text-3xl md:text-5xl font-bold mb-4"><?php echo wp_kses_post(ansae_t('Mur des Champions')); ?></h1>
             <div class="divider-gold w-20 mx-auto" aria-hidden="true"></div>
         </header>
 
         <?php if ( have_posts() ) : ?>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            <?php $max_pages = $wp_query->max_num_pages; ?>
+<div id="champion-grid" class="champion-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8" data-max-num-pages="<?php echo esc_attr($max_pages); ?>" data-current-page="1">
                 <?php while ( have_posts() ) : the_post(); ?>
                     <article class="group rounded-xl overflow-hidden border border-gold/20 bg-neutral-900/30 hover:bg-neutral-900/50 transition-colors shadow-lg">
                         <?php if ( has_post_thumbnail() ) : ?>

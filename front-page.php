@@ -326,9 +326,9 @@
             </div>
             
             <div class="mt-10 text-center">
-                <a href="<?php echo esc_url(get_post_type_archive_link('champion')); ?>" class="inline-block px-8 py-4 rounded-md border border-gold/60 text-gold font-semibold tracking-wide transition-all duration-300 transform hover:scale-105 hover:bg-gold/10 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
-                    <?php echo ansae_t('Voir tous les champions'); ?>
-                </a>
+                    <a href="<?php echo esc_url( home_url('/classement/') ); ?>" class="inline-block px-8 py-4 rounded-md border border-gold/60 text-gold font-semibold tracking-wide transition-all duration-300 transform hover:scale-105 hover:bg-gold/10 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                        <?php echo ansae_t('Voir tous les champions'); ?>
+                    </a>
             </div>
         </div>
     </section>

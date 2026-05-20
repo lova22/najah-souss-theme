@@ -607,6 +607,65 @@ function ansae_t($french_text) {
 }
 
 // Shortcode for Champion Ratings Table
+
+// AJAX handler for infinite scroll on Champions archive
+function load_more_champions() {
+    // Verify nonce for security
+    check_ajax_referer('load_more_champions_nonce', 'nonce');
+    $page = intval($_POST['page']);
+    $args = array(
+        'post_type' => 'champion',
+        'posts_per_page' => 8,
+        'paged' => $page,
+    );
+    $query = new WP_Query($args);
+    if ($query->have_posts()) {
+        ob_start();
+        while ($query->have_posts()) {
+            $query->the_post();
+            ?>
+            <article class="group rounded-xl overflow-hidden border border-gold/20 bg-neutral-900/30 hover:bg-neutral-900/50 transition-colors shadow-lg">
+                <?php if ( has_post_thumbnail() ) : ?>
+                    <a href="<?php the_permalink(); ?>" class="block">
+                        <?php the_post_thumbnail('large', array('class' => 'w-full h-48 object-cover')); ?>
+                    </a>
+                <?php endif; ?>
+                <div class="p-4">
+                    <h2 class="text-lg font-semibold text-gold group-hover:text-white transition-colors">
+                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                    </h2>
+                    <?php if ( $category = get_field('categorie') ) : ?>
+                        <p class="text-sm text-muted-foreground mt-1"><?php echo esc_html($category); ?></p>
+                    <?php endif; ?>
+                </div>
+            </article>
+            <?php
+        }
+        wp_reset_postdata();
+        $html = ob_get_clean();
+        wp_send_json_success(array(
+            'html' => $html,
+            'has_more' => ($page < $query->max_num_pages)
+        ));
+    } else {
+        wp_send_json_error();
+    }
+    wp_die();
+}
+add_action('wp_ajax_load_more_champions', 'load_more_champions');
+add_action('wp_ajax_nopriv_load_more_champions', 'load_more_champions');
+
+// Enqueue infinite scroll script on champions archive page
+function enqueue_champion_infinite_scroll() {
+    if ( is_post_type_archive('champion') ) {
+        wp_enqueue_script('champion-infinite-scroll', get_template_directory_uri() . '/assets/js/infinite-scroll.js', array(), null, true);
+        wp_localize_script('champion-infinite-scroll', 'championScroll', array(
+            'ajax_url' => admin_url('admin-ajax.php'),
+            'nonce' => wp_create_nonce('load_more_champions_nonce')
+        ));
+    }
+}
+add_action('wp_enqueue_scripts', 'enqueue_champion_infinite_scroll');
 function champion_ratings_table_shortcode() {
     $leaderboard = new WP_Query(array(
         'post_type' => 'champion',
