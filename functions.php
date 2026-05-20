@@ -605,3 +605,56 @@ function ansae_t($french_text) {
     $ansae_cache[$lang][$french_text] = $french_text;
     return $ansae_cache[$lang][$french_text];
 }
+
+// Shortcode for Champion Ratings Table
+function champion_ratings_table_shortcode() {
+    $leaderboard = new WP_Query(array(
+        'post_type' => 'champion',
+        'posts_per_page' => -1,
+        'meta_key' => 'rating_standard',
+        'orderby' => 'meta_value_num',
+        'order' => 'DESC',
+        'suppress_filters' => false,
+    ));
+    if (!$leaderboard->have_posts()) {
+        return '<p class="text-center text-muted-foreground">' . esc_html(ansae_t('Aucun classement disponible.')) . '</p>';
+    }
+    ob_start();
+    ?>
+    <table class="w-full text-start border-collapse">
+        <thead>
+            <tr class="bg-neutral-900 text-gold uppercase text-[10px] tracking-widest font-bold">
+                <th class="px-4 py-4 text-start"><?php echo ansae_t('JOUEUR'); ?></th>
+                <th class="px-4 py-4 text-start"><?php echo ansae_t('FIDE ID'); ?></th>
+                <th class="px-4 py-4 text-start"><?php echo ansae_t('CATÉGORIE'); ?></th>
+                <th class="px-4 py-4 text-center"><?php echo ansae_t('STANDARD'); ?></th>
+                <th class="px-4 py-4 text-center"><?php echo ansae_t('RAPID'); ?></th>
+                <th class="px-4 py-4 text-center"><?php echo ansae_t('BLITZ'); ?></th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gold/10">
+            <?php while ($leaderboard->have_posts()) : $leaderboard->the_post(); ?>
+                <tr class="hover:bg-gold/5 transition-colors group">
+                    <td class="px-4 py-4 font-semibold text-white group-hover:text-gold transition-colors">
+                        <a href="<?php the_permalink(); ?>"><?php the_title(); ?></a>
+                    </td>
+                    <td class="px-4 py-4 text-muted-foreground text-xs font-mono">
+                        <?php $f_id = get_field('fide_id');
+                        if ($f_id): ?>
+                            <a href="https://ratings.fide.com/profile/<?php echo esc_attr($f_id); ?>" target="_blank" class="text-gold hover:underline font-mono"><?php echo esc_html($f_id); ?></a>
+                        <?php else: ?>-
+                        <?php endif; ?>
+                    </td>
+                    <td class="px-4 py-4 text-muted-foreground text-xs"><?php echo esc_html(ansae_t(get_field('categorie') ?: '-')); ?></td>
+                    <td class="px-4 py-4 text-center"><span class="inline-block px-2 py-1 rounded bg-gold/10 text-gold font-bold font-mono text-sm"><?php echo esc_html(get_field('rating_standard') ?: '-'); ?></span></td>
+                    <td class="px-4 py-4 text-center text-muted-foreground font-mono text-sm"><?php echo esc_html(get_field('rating_rapid') ?: '-'); ?></td>
+                    <td class="px-4 py-4 text-center text-muted-foreground font-mono text-sm"><?php echo esc_html(get_field('rating_blitz') ?: '-'); ?></td>
+                </tr>
+            <?php endwhile; wp_reset_postdata(); ?>
+        </tbody>
+    </table>
+    <?php
+    return ob_get_clean();
+}
+add_shortcode('champion_ratings_table', 'champion_ratings_table_shortcode');
+
