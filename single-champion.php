@@ -43,11 +43,22 @@ get_header(); ?>
                         
                         $api_data = function_exists('ansae_fetch_fide_data') ? ansae_fetch_fide_data($fide_id) : false;
                         $chart_data = [];
+                        $birth_year = '-';
+                        $federation = '-';
+                        $world_rank = '-';
+                        $national_rank = '-';
+                        $continental_rank = '-';
                         
                         if ($api_data) {
                             if (isset($api_data['std_rating'])) $standard = $api_data['std_rating'];
                             if (isset($api_data['rapid_rating'])) $rapid = $api_data['rapid_rating'];
                             if (isset($api_data['blitz_rating'])) $blitz = $api_data['blitz_rating'];
+                            
+                            if (isset($api_data['birth_year'])) $birth_year = $api_data['birth_year'];
+                            if (isset($api_data['federation'])) $federation = $api_data['federation'];
+                            if (isset($api_data['world_rank_active'])) $world_rank = $api_data['world_rank_active'];
+                            if (isset($api_data['national_rank_active'])) $national_rank = $api_data['national_rank_active'];
+                            if (isset($api_data['continental_rank_active'])) $continental_rank = $api_data['continental_rank_active'];
                             
                             // Grab history array
                             if (isset($api_data['history']) && is_array($api_data['history'])) {
@@ -88,6 +99,34 @@ get_header(); ?>
                             </h3>
                             <div class="relative w-full h-64">
                                 <canvas id="eloHistoryChart"></canvas>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+
+                        <!-- Premium Info Grid -->
+                        <?php if ($api_data && $fide_id) : ?>
+                        <div class="mb-10 bg-surface/50 border border-gold/10 rounded-2xl p-6 shadow-xl">
+                            <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-6 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                <?php echo ansae_t('Statistiques Officielles FIDE'); ?>
+                            </h3>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                                <div>
+                                    <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Année de naissance'); ?></div>
+                                    <div class="text-white font-medium text-lg"><?php echo esc_html($birth_year); ?></div>
+                                </div>
+                                <div>
+                                    <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Fédération'); ?></div>
+                                    <div class="text-white font-medium text-lg"><?php echo esc_html($federation); ?></div>
+                                </div>
+                                <div>
+                                    <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Rang National Actif'); ?></div>
+                                    <div class="text-gold font-bold text-lg">#<?php echo esc_html($national_rank); ?></div>
+                                </div>
+                                <div>
+                                    <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Rang Mondial Actif'); ?></div>
+                                    <div class="text-gold font-bold text-lg">#<?php echo esc_html($world_rank); ?></div>
+                                </div>
                             </div>
                         </div>
                         <?php endif; ?>
