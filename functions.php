@@ -867,3 +867,42 @@ function ansae_fetch_fide_data($fide_id) {
 
     return false;
 }
+
+// =========================================================================
+// PWA (PROGRESSIVE WEB APP) ROOT SCOPE REWRITE RULES
+// =========================================================================
+function ansae_pwa_rewrite_rules() {
+    add_rewrite_rule('^manifest\.json$', 'index.php?ansae_pwa_file=manifest', 'top');
+    add_rewrite_rule('^service-worker\.js$', 'index.php?ansae_pwa_file=sw', 'top');
+}
+add_action('init', 'ansae_pwa_rewrite_rules');
+
+function ansae_pwa_query_vars($vars) {
+    $vars[] = 'ansae_pwa_file';
+    return $vars;
+}
+add_filter('query_vars', 'ansae_pwa_query_vars');
+
+function ansae_pwa_serve_files() {
+    $file = get_query_var('ansae_pwa_file');
+    if (empty($file)) return;
+
+    $theme_dir = get_template_directory();
+    
+    if ($file === 'manifest') {
+        $file_path = $theme_dir . '/manifest.json';
+        header('Content-Type: application/json; charset=utf-8');
+    } elseif ($file === 'sw') {
+        $file_path = $theme_dir . '/service-worker.js';
+        header('Content-Type: application/javascript; charset=utf-8');
+        header('Service-Worker-Allowed: /');
+    } else {
+        return;
+    }
+
+    if (file_exists($file_path)) {
+        readfile($file_path);
+        exit;
+    }
+}
+add_action('template_redirect', 'ansae_pwa_serve_files');

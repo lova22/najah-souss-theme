@@ -122,6 +122,14 @@
         }
       }
     </style>
+    
+    <!-- PWA Meta Tags -->
+    <meta name="theme-color" content="#d4af37">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ANSAE">
+    <link rel="manifest" href="/manifest.json">
+    
     <?php wp_head(); ?>
 </head>
 <body <?php body_class( 'min-h-screen bg-background text-foreground' ); ?>>
