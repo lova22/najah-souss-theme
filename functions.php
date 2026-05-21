@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 
 function najah_souss_scripts() {
     // We enqueue the main style.css.
@@ -833,7 +833,10 @@ function ansae_save_champion_fide_meta($post_id) {
     if (!current_user_can('edit_post', $post_id)) return;
 
     if (isset($_POST['ansae_fide_id'])) {
-        update_post_meta($post_id, '_champion_fide_id', sanitize_text_field($_POST['ansae_fide_id']));
+        $new_fide_id = sanitize_text_field($_POST['ansae_fide_id']);
+        update_post_meta($post_id, '_champion_fide_id', $new_fide_id);
+        // Force clear cache for this ID
+        delete_transient('fide_data_' . $new_fide_id);
     }
 }
 add_action('save_post_champion', 'ansae_save_champion_fide_meta');

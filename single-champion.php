@@ -132,14 +132,28 @@ document.addEventListener('DOMContentLoaded', function() {
     const ctx = document.getElementById('eloHistoryChart');
     if (!ctx) return;
     
-    const chartData = <?php echo json_encode($chart_data); ?>;
-    if (!chartData || chartData.length === 0) return;
+    const chartData = <?php echo wp_json_encode($chart_data); ?>;
+    console.log("FIDE API Chart Data:", chartData);
+
+    if (!chartData || !Array.isArray(chartData) || chartData.length === 0) {
+        console.warn('FIDE Chart: No valid history data found or empty array.');
+        return;
+    }
     
-    // Extract dates and standard ratings
-    // Adjust based on the actual API structure
-    const labels = chartData.map(item => item.date || item.period || item.rating_date);
-    const dataPoints = chartData.map(item => parseInt(item.standard || item.standard_elo) || null);
+    // Extract dates and standard ratings robustly
+    const labels = chartData.map(item => item.date || item.period || item.rating_date || 'N/A');
+    const dataPoints = chartData.map(item => {
+        let val = parseInt(item.standard || item.standard_elo || item.rating);
+        return isNaN(val) ? null : val;
+    });
     
+    // Filter out completely null datasets so the chart doesn't crash
+    const validDataPoints = dataPoints.filter(d => d !== null);
+    if (validDataPoints.length === 0) {
+        console.warn('FIDE Chart: Could not parse any valid ratings from data.');
+        return;
+    }
+
     new Chart(ctx, {
         type: 'line',
         data: {
@@ -147,7 +161,7 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Standard Elo',
                 data: dataPoints,
-                borderColor: '#d4af37', // Gold hex approximation for Chart.js
+                borderColor: '#d4af37', // Gold
                 backgroundColor: 'rgba(212, 175, 55, 0.1)',
                 borderWidth: 3,
                 pointBackgroundColor: '#d4af37',
@@ -180,7 +194,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 y: {
                     grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
-                    ticks: { color: 'rgba(255,255,255,0.5)' }
+                    ticks: { color: 'rgba(255,255,255,0.5)' },
+                    suggestedMin: Math.min(...validDataPoints) - 50,
+                    suggestedMax: Math.max(...validDataPoints) + 50
                 }
             }
         }
