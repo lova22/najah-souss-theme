@@ -327,7 +327,13 @@
             </div>
             
             <div class="mt-10 text-center">
-                    <a href="<?php echo esc_url( home_url( ansae_t('/classement/') ) ); ?>" class="inline-block px-8 py-4 rounded-md border border-gold/60 text-gold font-semibold tracking-wide transition-all duration-300 transform hover:scale-105 hover:bg-gold/10 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                    <?php
+                    $classement_obj = get_page_by_path('classement');
+                    $classement_url = $classement_obj
+                        ? get_permalink( function_exists('pll_get_post') ? pll_get_post($classement_obj->ID) : $classement_obj->ID )
+                        : home_url('/classement/');
+                    ?>
+                    <a href="<?php echo esc_url( $classement_url ); ?>" class="inline-block px-8 py-4 rounded-md border border-gold/60 text-gold font-semibold tracking-wide transition-all duration-300 transform hover:scale-105 hover:bg-gold/10 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
                         <?php echo ansae_t('Voir tous les champions'); ?>
                     </a>
             </div>
@@ -617,7 +623,13 @@
             </div>
 
             <div class="mt-14 text-center">
-                <a href="<?php echo esc_url( home_url( ansae_t('/actualites/') ) ); ?>" class="inline-block px-8 py-4 rounded-md border border-gold/60 text-gold font-semibold tracking-wide transition-all duration-300 transform hover:scale-105 hover:bg-gold/10 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                <?php
+                $posts_page_id  = get_option('page_for_posts');
+                $actualites_url = $posts_page_id
+                    ? get_permalink( function_exists('pll_get_post') ? pll_get_post($posts_page_id) : $posts_page_id )
+                    : home_url('/actualites/');
+                ?>
+                <a href="<?php echo esc_url( $actualites_url ); ?>" class="inline-block px-8 py-4 rounded-md border border-gold/60 text-gold font-semibold tracking-wide transition-all duration-300 transform hover:scale-105 hover:bg-gold/10 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
                     <?php echo ansae_t('Voir toutes les actualités'); ?>
                 </a>
             </div>
