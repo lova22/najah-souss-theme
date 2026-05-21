@@ -852,7 +852,7 @@ function ansae_fetch_fide_data($fide_id) {
         return $cached_data;
     }
 
-    $api_url = 'https://fide-api.vercel.app/api/player_history?id=' . urlencode($fide_id);
+    $api_url = 'https://fide-api.vercel.app/player_info/?fide_id=' . urlencode($fide_id) . '&history=true';
     $response = wp_remote_get($api_url, array('timeout' => 15));
 
     if (is_wp_error($response) || wp_remote_retrieve_response_code($response) !== 200) {

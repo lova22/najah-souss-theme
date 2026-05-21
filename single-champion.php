@@ -45,24 +45,13 @@ get_header(); ?>
                         $chart_data = [];
                         
                         if ($api_data) {
-                            if (isset($api_data['standard_elo'])) $standard = $api_data['standard_elo'];
-                            if (isset($api_data['rapid_elo'])) $rapid = $api_data['rapid_elo'];
-                            if (isset($api_data['blitz_elo'])) $blitz = $api_data['blitz_elo'];
+                            if (isset($api_data['std_rating'])) $standard = $api_data['std_rating'];
+                            if (isset($api_data['rapid_rating'])) $rapid = $api_data['rapid_rating'];
+                            if (isset($api_data['blitz_rating'])) $blitz = $api_data['blitz_rating'];
                             
-                            // Check for history array format
+                            // Grab history array
                             if (isset($api_data['history']) && is_array($api_data['history'])) {
-                                $history = $api_data['history'];
-                                $latest = end($history);
-                                if (isset($latest['standard'])) $standard = $latest['standard'];
-                                if (isset($latest['rapid'])) $rapid = $latest['rapid'];
-                                if (isset($latest['blitz'])) $blitz = $latest['blitz'];
-                                $chart_data = $history;
-                            } elseif (is_array($api_data) && count($api_data) > 0 && isset($api_data[0]['date'])) {
-                                $latest = end($api_data);
-                                if (isset($latest['standard'])) $standard = $latest['standard'];
-                                if (isset($latest['rapid'])) $rapid = $latest['rapid'];
-                                if (isset($latest['blitz'])) $blitz = $latest['blitz'];
-                                $chart_data = $api_data;
+                                $chart_data = array_reverse($api_data['history']); // Reverse if API returns newest first, Chart.js usually wants oldest left to newest right
                             }
                         }
                         
@@ -141,9 +130,9 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Extract dates and standard ratings robustly
-    const labels = chartData.map(item => item.date || item.period || item.rating_date || 'N/A');
+    const labels = chartData.map(item => item.date || item.period || 'N/A');
     const dataPoints = chartData.map(item => {
-        let val = parseInt(item.standard || item.standard_elo || item.rating);
+        let val = parseInt(item.classical_rating || item.std_rating || item.standard);
         return isNaN(val) ? null : val;
     });
     
