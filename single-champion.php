@@ -102,11 +102,11 @@ get_header(); ?>
                                 <div class="font-mono text-white font-bold"><?php echo esc_html($birth_year); ?></div>
                             </div>
                             <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg">
-                                <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Rang National'); ?></div>
+                                <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Rang National Actif'); ?></div>
                                 <div class="font-mono text-gold font-bold"><?php echo esc_html($national_rank); ?></div>
                             </div>
                             <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg">
-                                <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Rang Mondial'); ?></div>
+                                <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Rang Mondial Actif'); ?></div>
                                 <div class="font-mono text-gold font-bold"><?php echo esc_html($world_rank); ?></div>
                             </div>
                         </div>
