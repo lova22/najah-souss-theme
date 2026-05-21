@@ -31,24 +31,77 @@ get_header(); ?>
                         <h1 class="text-4xl md:text-5xl font-extrabold text-white font-tajawal mb-2"><?php the_title(); ?></h1>
                         <p class="text-gold text-lg md:text-xl font-medium tracking-wide uppercase mb-6"><?php echo esc_html(get_field('champion_title')); ?></p>
                         
+                        <?php
+                        $fide_id = get_post_meta(get_the_ID(), '_champion_fide_id', true);
+                        if (empty($fide_id) && function_exists('get_field')) {
+                            $fide_id = get_field('fide_id');
+                        }
+                        
+                        $standard = function_exists('get_field') ? get_field('rating_standard') : '';
+                        $rapid = function_exists('get_field') ? get_field('rating_rapid') : '';
+                        $blitz = function_exists('get_field') ? get_field('rating_blitz') : '';
+                        
+                        $api_data = function_exists('ansae_fetch_fide_data') ? ansae_fetch_fide_data($fide_id) : false;
+                        $chart_data = [];
+                        
+                        if ($api_data) {
+                            if (isset($api_data['standard_elo'])) $standard = $api_data['standard_elo'];
+                            if (isset($api_data['rapid_elo'])) $rapid = $api_data['rapid_elo'];
+                            if (isset($api_data['blitz_elo'])) $blitz = $api_data['blitz_elo'];
+                            
+                            // Check for history array format
+                            if (isset($api_data['history']) && is_array($api_data['history'])) {
+                                $history = $api_data['history'];
+                                $latest = end($history);
+                                if (isset($latest['standard'])) $standard = $latest['standard'];
+                                if (isset($latest['rapid'])) $rapid = $latest['rapid'];
+                                if (isset($latest['blitz'])) $blitz = $latest['blitz'];
+                                $chart_data = $history;
+                            } elseif (is_array($api_data) && count($api_data) > 0 && isset($api_data[0]['date'])) {
+                                $latest = end($api_data);
+                                if (isset($latest['standard'])) $standard = $latest['standard'];
+                                if (isset($latest['rapid'])) $rapid = $latest['rapid'];
+                                if (isset($latest['blitz'])) $blitz = $latest['blitz'];
+                                $chart_data = $api_data;
+                            }
+                        }
+                        
+                        $standard = $standard ?: 'N/A';
+                        $rapid = $rapid ?: 'N/A';
+                        $blitz = $blitz ?: 'N/A';
+                        ?>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
                             <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg">
                                 <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('FIDE ID'); ?></div>
-                                <div class="font-mono text-gold font-bold"><?php echo esc_html(get_field('fide_id') ?: '-'); ?></div>
+                                <div class="font-mono text-gold font-bold"><?php echo esc_html($fide_id ?: '-'); ?></div>
                             </div>
-                            <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg">
+                            <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg relative group">
                                 <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('STANDARD'); ?></div>
-                                <div class="font-mono text-white font-bold"><?php echo esc_html(get_field('rating_standard') ?: '-'); ?></div>
+                                <div class="font-mono text-white font-bold"><?php echo esc_html($standard); ?></div>
+                                <?php if($api_data) echo '<div class="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]" title="Live API Data"></div>'; ?>
                             </div>
-                            <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg">
+                            <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg relative group">
                                 <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('RAPID'); ?></div>
-                                <div class="font-mono text-white font-bold"><?php echo esc_html(get_field('rating_rapid') ?: '-'); ?></div>
+                                <div class="font-mono text-white font-bold"><?php echo esc_html($rapid); ?></div>
                             </div>
-                            <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg">
+                            <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg relative group">
                                 <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('BLITZ'); ?></div>
-                                <div class="font-mono text-white font-bold"><?php echo esc_html(get_field('rating_blitz') ?: '-'); ?></div>
+                                <div class="font-mono text-white font-bold"><?php echo esc_html($blitz); ?></div>
                             </div>
                         </div>
+
+                        <!-- FIDE Ratings Chart -->
+                        <?php if (!empty($chart_data)) : ?>
+                        <div class="mb-10 bg-surface/50 border border-gold/10 rounded-2xl p-6 shadow-xl">
+                            <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-4 flex items-center gap-2">
+                                <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+                                <?php echo ansae_t('Évolution Elo'); ?>
+                            </h3>
+                            <div class="relative w-full h-64">
+                                <canvas id="eloHistoryChart"></canvas>
+                            </div>
+                        </div>
+                        <?php endif; ?>
 
                         <!-- Bio / Achievements -->
                         <div class="prose prose-lg prose-invert max-w-none text-muted-foreground leading-relaxed mb-10">
@@ -71,5 +124,69 @@ get_header(); ?>
         <?php endwhile; ?>
     </div>
 </main>
+
+<?php if (!empty($chart_data)) : ?>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ctx = document.getElementById('eloHistoryChart');
+    if (!ctx) return;
+    
+    const chartData = <?php echo json_encode($chart_data); ?>;
+    if (!chartData || chartData.length === 0) return;
+    
+    // Extract dates and standard ratings
+    // Adjust based on the actual API structure
+    const labels = chartData.map(item => item.date || item.period || item.rating_date);
+    const dataPoints = chartData.map(item => parseInt(item.standard || item.standard_elo) || null);
+    
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Standard Elo',
+                data: dataPoints,
+                borderColor: '#d4af37', // Gold hex approximation for Chart.js
+                backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                borderWidth: 3,
+                pointBackgroundColor: '#d4af37',
+                pointBorderColor: '#fff',
+                pointHoverBackgroundColor: '#fff',
+                pointHoverBorderColor: '#d4af37',
+                fill: true,
+                tension: 0.4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false },
+                tooltip: {
+                    backgroundColor: 'rgba(0,0,0,0.8)',
+                    titleColor: '#fff',
+                    bodyColor: '#d4af37',
+                    borderColor: 'rgba(212, 175, 55, 0.3)',
+                    borderWidth: 1,
+                    padding: 10,
+                    displayColors: false,
+                }
+            },
+            scales: {
+                x: {
+                    grid: { display: false, drawBorder: false },
+                    ticks: { color: 'rgba(255,255,255,0.5)', maxTicksLimit: 6 }
+                },
+                y: {
+                    grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false },
+                    ticks: { color: 'rgba(255,255,255,0.5)' }
+                }
+            }
+        }
+    });
+});
+</script>
+<?php endif; ?>
 
 <?php get_footer(); ?>

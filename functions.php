@@ -794,3 +794,74 @@ function ansae_breadcrumbs() {
     echo '</ol>';
     echo '</nav>';
 }
+
+// =========================================================================
+// FIDE API INTEGRATION & CHAMPION METABOX
+// =========================================================================
+
+// 1. Register Custom Meta Box for FIDE ID
+function ansae_add_champion_metaboxes() {
+    add_meta_box(
+        'ansae_champion_fide_box',
+        ansae_t('ID FIDE du Champion'),
+        'ansae_champion_fide_callback',
+        'champion',
+        'side',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'ansae_add_champion_metaboxes');
+
+function ansae_champion_fide_callback(\) {
+    wp_nonce_field('ansae_save_champion_fide', 'ansae_champion_fide_nonce');
+    \ = get_post_meta(\->ID, '_champion_fide_id', true);
+    
+    // Fallback to ACF 'fide_id' if exists and meta is empty
+    if (empty(\) && function_exists('get_field')) {
+        \ = get_field('fide_id', \->ID);
+    }
+
+    echo '<label for="ansae_fide_id">' . esc_html(ansae_t('Entrez l\'ID FIDE :')) . '</label><br>';
+    echo '<input type="text" id="ansae_fide_id" name="ansae_fide_id" value="' . esc_attr(\) . '" style="width:100%; margin-top:5px;" />';
+}
+
+function ansae_save_champion_fide_meta(\) {
+    if (!isset(\['ansae_champion_fide_nonce']) || !wp_verify_nonce(\['ansae_champion_fide_nonce'], 'ansae_save_champion_fide')) return;
+    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) return;
+    if (!current_user_can('edit_post', \)) return;
+
+    if (isset(\['ansae_fide_id'])) {
+        update_post_meta(\, '_champion_fide_id', sanitize_text_field(\['ansae_fide_id']));
+    }
+}
+add_action('save_post_champion', 'ansae_save_champion_fide_meta');
+
+// 2. API Fetch Function with Transients
+function ansae_fetch_fide_data(\) {
+    if (empty(\)) return false;
+
+    \ = 'fide_data_' . \;
+    \ = get_transient(\);
+
+    if (false !== \) {
+        return \;
+    }
+
+    \ = 'https://fide-api.vercel.app/api/player_history?id=' . urlencode(\);
+    \ = wp_remote_get(\, array('timeout' => 15));
+
+    if (is_wp_error(\) || wp_remote_retrieve_response_code(\) !== 200) {
+        return false;
+    }
+
+    \ = wp_remote_retrieve_body(\);
+    \ = json_decode(\, true);
+
+    if (!empty(\)) {
+        // Cache for 7 days
+        set_transient(\, \, 7 * DAY_IN_SECONDS);
+        return \;
+    }
+
+    return false;
+}
