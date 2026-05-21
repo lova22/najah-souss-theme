@@ -43,42 +43,45 @@ get_header(); ?>
                         
                         $api_data = function_exists('ansae_fetch_fide_data') ? ansae_fetch_fide_data($fide_id) : false;
                         $chart_data = [];
-                        $birth_year = '-';
-                        $federation = '-';
-                        $world_rank = '-';
-                        $national_rank = '-';
-                        $continental_rank = '-';
+                        $birth_year = '';
+                        $federation = '';
+                        $world_rank = '';
+                        $national_rank = '';
                         
                         if ($api_data) {
-                            if (isset($api_data['std_rating'])) $standard = $api_data['std_rating'];
-                            if (isset($api_data['rapid_rating'])) $rapid = $api_data['rapid_rating'];
-                            if (isset($api_data['blitz_rating'])) $blitz = $api_data['blitz_rating'];
+                            if (isset($api_data['std_rating']) && $api_data['std_rating']) $standard = $api_data['std_rating'];
+                            if (isset($api_data['rapid_rating']) && $api_data['rapid_rating']) $rapid = $api_data['rapid_rating'];
+                            if (isset($api_data['blitz_rating']) && $api_data['blitz_rating']) $blitz = $api_data['blitz_rating'];
                             
-                            if (isset($api_data['birth_year'])) $birth_year = $api_data['birth_year'];
-                            if (isset($api_data['federation'])) $federation = $api_data['federation'];
-                            if (isset($api_data['world_rank_active'])) $world_rank = $api_data['world_rank_active'];
-                            if (isset($api_data['national_rank_active'])) $national_rank = $api_data['national_rank_active'];
-                            if (isset($api_data['continental_rank_active'])) $continental_rank = $api_data['continental_rank_active'];
+                            if (isset($api_data['birth_year']) && $api_data['birth_year']) $birth_year = $api_data['birth_year'];
+                            if (isset($api_data['federation']) && $api_data['federation']) $federation = $api_data['federation'];
+                            if (isset($api_data['world_rank_active']) && $api_data['world_rank_active']) $world_rank = $api_data['world_rank_active'];
+                            if (isset($api_data['national_rank_active']) && $api_data['national_rank_active']) $national_rank = $api_data['national_rank_active'];
                             
                             // Grab history array
                             if (isset($api_data['history']) && is_array($api_data['history'])) {
-                                $chart_data = array_reverse($api_data['history']); // Reverse if API returns newest first, Chart.js usually wants oldest left to newest right
+                                $chart_data = array_reverse($api_data['history']);
                             }
                         }
                         
                         $standard = $standard ?: 'N/A';
                         $rapid = $rapid ?: 'N/A';
                         $blitz = $blitz ?: 'N/A';
+                        $birth_year = $birth_year ?: 'N/A';
+                        $federation = $federation ?: 'N/A';
+                        $world_rank = $world_rank ? "#$world_rank" : 'N/A';
+                        $national_rank = $national_rank ? "#$national_rank" : 'N/A';
                         ?>
+                        
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
                             <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg">
                                 <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('FIDE ID'); ?></div>
-                                <div class="font-mono text-gold font-bold"><?php echo esc_html($fide_id ?: '-'); ?></div>
+                                <div class="font-mono text-gold font-bold"><?php echo esc_html($fide_id ?: 'N/A'); ?></div>
                             </div>
                             <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg relative group">
                                 <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('STANDARD'); ?></div>
                                 <div class="font-mono text-white font-bold"><?php echo esc_html($standard); ?></div>
-                                <?php if($api_data) echo '<div class="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]" title="Live API Data"></div>'; ?>
+                                <?php if($api_data && $standard !== 'N/A') echo '<div class="absolute top-2 right-2 w-1.5 h-1.5 rounded-full bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]" title="Live API Data"></div>'; ?>
                             </div>
                             <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg relative group">
                                 <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('RAPID'); ?></div>
@@ -87,6 +90,24 @@ get_header(); ?>
                             <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg relative group">
                                 <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('BLITZ'); ?></div>
                                 <div class="font-mono text-white font-bold"><?php echo esc_html($blitz); ?></div>
+                            </div>
+                            
+                            <!-- Additional FIDE Info -->
+                            <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg">
+                                <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Fédération'); ?></div>
+                                <div class="font-mono text-white font-bold"><?php echo esc_html($federation); ?></div>
+                            </div>
+                            <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg">
+                                <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Naissance'); ?></div>
+                                <div class="font-mono text-white font-bold"><?php echo esc_html($birth_year); ?></div>
+                            </div>
+                            <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg">
+                                <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Rang National'); ?></div>
+                                <div class="font-mono text-gold font-bold"><?php echo esc_html($national_rank); ?></div>
+                            </div>
+                            <div class="bg-surface border border-gold/20 p-4 rounded-xl text-center shadow-lg">
+                                <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Rang Mondial'); ?></div>
+                                <div class="font-mono text-gold font-bold"><?php echo esc_html($world_rank); ?></div>
                             </div>
                         </div>
 
@@ -103,41 +124,12 @@ get_header(); ?>
                         </div>
                         <?php endif; ?>
 
-                        <!-- Premium Info Grid -->
-                        <?php if ($api_data && $fide_id) : ?>
-                        <div class="mb-10 bg-surface/50 border border-gold/10 rounded-2xl p-6 shadow-xl">
-                            <h3 class="text-sm font-bold text-white tracking-widest uppercase mb-6 flex items-center gap-2">
-                                <svg class="w-4 h-4 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                                <?php echo ansae_t('Statistiques Officielles FIDE'); ?>
-                            </h3>
-                            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                                <div>
-                                    <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Année de naissance'); ?></div>
-                                    <div class="text-white font-medium text-lg"><?php echo esc_html($birth_year); ?></div>
-                                </div>
-                                <div>
-                                    <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Fédération'); ?></div>
-                                    <div class="text-white font-medium text-lg"><?php echo esc_html($federation); ?></div>
-                                </div>
-                                <div>
-                                    <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Rang National Actif'); ?></div>
-                                    <div class="text-gold font-bold text-lg">#<?php echo esc_html($national_rank); ?></div>
-                                </div>
-                                <div>
-                                    <div class="text-[10px] text-muted-foreground uppercase tracking-widest mb-1"><?php echo ansae_t('Rang Mondial Actif'); ?></div>
-                                    <div class="text-gold font-bold text-lg">#<?php echo esc_html($world_rank); ?></div>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endif; ?>
-
                         <!-- Bio / Achievements -->
                         <div class="prose prose-lg prose-invert max-w-none text-muted-foreground leading-relaxed mb-10">
                             <?php the_content(); ?>
                         </div>
 
                         <!-- Official Profile Link -->
-                        <?php $fide_id = get_field('fide_id'); ?>
                         <?php if ($fide_id): ?>
                             <div class="mt-auto self-start">
                                 <a href="https://ratings.fide.com/profile/<?php echo esc_attr($fide_id); ?>" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-3 px-8 py-4 rounded-md bg-gradient-gold text-primary-foreground font-semibold tracking-wide gold-shadow transition-all duration-300 transform hover:scale-105 hover:shadow-lg">
@@ -168,14 +160,12 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     
-    // Extract dates and standard ratings robustly
     const labels = chartData.map(item => item.date || item.period || 'N/A');
     const dataPoints = chartData.map(item => {
         let val = parseInt(item.classical_rating || item.std_rating || item.standard);
         return isNaN(val) ? null : val;
     });
     
-    // Filter out completely null datasets so the chart doesn't crash
     const validDataPoints = dataPoints.filter(d => d !== null);
     if (validDataPoints.length === 0) {
         console.warn('FIDE Chart: Could not parse any valid ratings from data.');
@@ -189,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
             datasets: [{
                 label: 'Standard Elo',
                 data: dataPoints,
-                borderColor: '#d4af37', // Gold
+                borderColor: '#d4af37',
                 backgroundColor: 'rgba(212, 175, 55, 0.1)',
                 borderWidth: 3,
                 pointBackgroundColor: '#d4af37',
