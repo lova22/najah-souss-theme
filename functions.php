@@ -144,6 +144,9 @@ function najah_souss_register_polylang_strings() {
     foreach ( $strings as $s ) {
         pll_register_string( 'najah-souss', $s, 'najah-souss' );
     }
+    // URL strings for multilingual routing
+    pll_register_string( 'url_actualites', '/actualites/', 'najah-souss' );
+    pll_register_string( 'url_classement', '/classement/', 'najah-souss' );
 }
 add_action( 'init', 'najah_souss_register_polylang_strings' );
 
@@ -668,11 +671,10 @@ function enqueue_champion_infinite_scroll() {
 add_action('wp_enqueue_scripts', 'enqueue_champion_infinite_scroll');
 function champion_ratings_table_shortcode() {
     $leaderboard = new WP_Query(array(
-        'post_type' => 'champion',
+        'post_type'      => 'champion',
         'posts_per_page' => -1,
-        'meta_key' => 'rating_standard',
-        'orderby' => 'meta_value_num',
-        'order' => 'DESC',
+        'orderby'        => 'menu_order',
+        'order'          => 'ASC',
         'suppress_filters' => false,
     ));
     if (!$leaderboard->have_posts()) {

@@ -204,8 +204,10 @@
             <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 <?php
                 $champions = new WP_Query(array(
-                    'post_type' => 'champion',
+                    'post_type'      => 'champion',
                     'posts_per_page' => 4,
+                    'orderby'        => 'menu_order',
+                    'order'          => 'ASC',
                     'suppress_filters' => false
                 ));
                 if ($champions->have_posts()) :
@@ -266,11 +268,10 @@
                     <tbody class="divide-y divide-gold/10">
                         <?php
                         $leaderboard = new WP_Query(array(
-                            'post_type' => 'champion',
+                            'post_type'      => 'champion',
                             'posts_per_page' => 8,
-                            'meta_key' => 'rating_standard',
-                            'orderby' => 'meta_value_num',
-                            'order' => 'DESC',
+                            'orderby'        => 'menu_order',
+                            'order'          => 'ASC',
                             'suppress_filters' => false
                         ));
 
@@ -326,7 +327,7 @@
             </div>
             
             <div class="mt-10 text-center">
-                    <a href="<?php echo esc_url( home_url('/classement/') ); ?>" class="inline-block px-8 py-4 rounded-md border border-gold/60 text-gold font-semibold tracking-wide transition-all duration-300 transform hover:scale-105 hover:bg-gold/10 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                    <a href="<?php echo esc_url( home_url( ansae_t('url_classement') ) ); ?>" class="inline-block px-8 py-4 rounded-md border border-gold/60 text-gold font-semibold tracking-wide transition-all duration-300 transform hover:scale-105 hover:bg-gold/10 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
                         <?php echo ansae_t('Voir tous les champions'); ?>
                     </a>
             </div>
@@ -616,7 +617,7 @@
             </div>
 
             <div class="mt-14 text-center">
-                <a href="<?php echo get_permalink(get_option('page_for_posts')); ?>" class="inline-block px-8 py-4 rounded-md border border-gold/60 text-gold font-semibold tracking-wide transition-all duration-300 transform hover:scale-105 hover:bg-gold/10 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
+                <a href="<?php echo esc_url( home_url( ansae_t('url_actualites') ) ); ?>" class="inline-block px-8 py-4 rounded-md border border-gold/60 text-gold font-semibold tracking-wide transition-all duration-300 transform hover:scale-105 hover:bg-gold/10 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
                     <?php echo ansae_t('Voir toutes les actualités'); ?>
                 </a>
             </div>
