@@ -624,9 +624,9 @@
 
             <div class="mt-14 text-center">
                 <?php
-                $posts_page_id  = get_option('page_for_posts');
-                $actualites_url = $posts_page_id
-                    ? get_permalink( function_exists('pll_get_post') ? pll_get_post($posts_page_id) : $posts_page_id )
+                $actualites_obj = get_page_by_path('actualites');
+                $actualites_url = $actualites_obj
+                    ? get_permalink( function_exists('pll_get_post') ? pll_get_post($actualites_obj->ID) : $actualites_obj->ID )
                     : home_url('/actualites/');
                 ?>
                 <a href="<?php echo esc_url( $actualites_url ); ?>" class="inline-block px-8 py-4 rounded-md border border-gold/60 text-gold font-semibold tracking-wide transition-all duration-300 transform hover:scale-105 hover:bg-gold/10 hover:shadow-[0_0_15px_rgba(212,175,55,0.3)]">
