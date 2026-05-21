@@ -7,11 +7,8 @@ get_header(); ?>
 <main class="py-24 px-6 min-h-screen">
     <div class="max-w-4xl mx-auto">
         <!-- Universal Back Navigation & Top Bar -->
-        <div class="flex items-center justify-between mb-8 pb-4 border-b border-gold/10">
-            <a href="<?php echo esc_url(function_exists('pll_home_url') ? pll_home_url() : home_url('/')); ?>" class="inline-flex items-center gap-2 text-gold hover:text-white transition-colors duration-300 font-semibold tracking-wide">
-                <span aria-hidden="true" class="rtl:rotate-180">←</span>
-                <?php echo ansae_t('Retour à l\'accueil'); ?>
-            </a>
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-4 border-b border-gold/10">
+            <?php if (function_exists('ansae_breadcrumbs')) ansae_breadcrumbs(); ?>
             
             <!-- Typography & Font Resizer -->
             <div class="flex items-center gap-2 bg-surface border border-gold/20 rounded-full px-4 py-1.5 shadow-sm">

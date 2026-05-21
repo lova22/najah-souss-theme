@@ -6,12 +6,9 @@ get_header();
 ?>
 <main class="py-24 px-6 min-h-screen">
     <div class="max-w-7xl mx-auto">
-        <!-- Back Navigation -->
+        <!-- Breadcrumbs -->
         <div class="mb-10">
-            <a href="<?php echo esc_url(function_exists('pll_home_url') ? pll_home_url() : home_url('/')); ?>" class="inline-flex items-center gap-2 text-gold hover:text-white transition-colors duration-300 font-semibold tracking-wide">
-                <span aria-hidden="true" class="rtl:rotate-180">←</span>
-                <?php echo ansae_t('Retour à l\'accueil'); ?>
-            </a>
+            <?php if (function_exists('ansae_breadcrumbs')) ansae_breadcrumbs(); ?>
         </div>
 
         <header class="text-center mb-12">

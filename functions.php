@@ -719,3 +719,78 @@ function champion_ratings_table_shortcode() {
 }
 add_shortcode('champion_ratings_table', 'champion_ratings_table_shortcode');
 
+
+// =========================================================================
+// BREADCRUMBS
+// =========================================================================
+function ansae_breadcrumbs() {
+    if ( is_front_page() ) return;
+
+    $home_url = esc_url( function_exists('pll_home_url') ? pll_home_url() : home_url('/') );
+    $home_label = ansae_t('Accueil');
+
+    echo '<nav aria-label="Breadcrumb" class="flex-1">';
+    echo '<ol class="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">';
+    
+    // Home
+    echo '<li class="inline-flex items-center">';
+    echo '<a href="' . $home_url . '" class="hover:text-gold transition-colors font-medium">' . $home_label . '</a>';
+    echo '</li>';
+
+    // Separator
+    $separator = '<li aria-hidden="true" class="text-gold/50 rtl:rotate-180">/</li>';
+
+    if ( is_home() || is_singular('post') ) {
+        echo $separator;
+        
+        $news_url = get_permalink( get_option('page_for_posts') );
+        if(function_exists('pll_get_post')){
+             $actualites_obj = get_page_by_path('actualites');
+             $news_url = $actualites_obj ? get_permalink( pll_get_post($actualites_obj->ID) ) : home_url('/actualites/');
+        }
+        $news_label = ansae_t('Actualités');
+        
+        if ( is_home() ) {
+            echo '<li class="text-white font-semibold" aria-current="page">' . $news_label . '</li>';
+        } else {
+            echo '<li class="inline-flex items-center">';
+            echo '<a href="' . esc_url($news_url) . '" class="hover:text-gold transition-colors font-medium">' . $news_label . '</a>';
+            echo '</li>';
+        }
+    }
+    
+    if ( is_post_type_archive('champion') || is_singular('champion') ) {
+        echo $separator;
+        $champion_url = get_post_type_archive_link('champion');
+        $champion_label = ansae_t('Champions');
+        if ( is_post_type_archive('champion') ) {
+             echo '<li class="text-white font-semibold" aria-current="page">' . $champion_label . '</li>';
+        } else {
+             echo '<li class="inline-flex items-center">';
+             echo '<a href="' . esc_url($champion_url) . '" class="hover:text-gold transition-colors font-medium">' . $champion_label . '</a>';
+             echo '</li>';
+        }
+    }
+
+    if ( is_singular() && !is_front_page() && !is_singular('post') && !is_singular('champion') ) {
+        echo $separator;
+        echo '<li class="text-white font-semibold truncate max-w-[200px] md:max-w-xs" aria-current="page">' . get_the_title() . '</li>';
+    } elseif ( is_page() && !is_front_page() ) {
+        echo $separator;
+        echo '<li class="text-white font-semibold" aria-current="page">' . get_the_title() . '</li>';
+    } elseif ( is_archive() && !is_post_type_archive('champion') && !is_home() ) {
+        echo $separator;
+        echo '<li class="text-white font-semibold" aria-current="page">' . get_the_archive_title() . '</li>';
+    } elseif ( is_search() ) {
+        echo $separator;
+        echo '<li class="text-white font-semibold" aria-current="page">' . ansae_t('Recherche') . '</li>';
+    }
+    
+    if ( is_singular('post') || is_singular('champion') ) {
+        echo $separator;
+        echo '<li class="text-white font-semibold truncate max-w-[200px] md:max-w-xs" aria-current="page">' . get_the_title() . '</li>';
+    }
+
+    echo '</ol>';
+    echo '</nav>';
+}

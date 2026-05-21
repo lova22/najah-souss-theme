@@ -33,6 +33,11 @@ $news_query = new WP_Query( $args );
 <main id="actualites-archive" class="py-24 px-6 min-h-screen">
     <div class="max-w-7xl mx-auto">
 
+        <!-- Breadcrumbs -->
+        <div class="mb-8">
+            <?php if (function_exists('ansae_breadcrumbs')) ansae_breadcrumbs(); ?>
+        </div>
+
         <!-- Page Header -->
         <header class="text-center mb-16">
             <p class="eyebrow mb-4"><?php echo ansae_t('Notre Actualité'); ?></p>
